@@ -17,14 +17,13 @@ duration = {
 
 
 def format_location (location):
-  parse_out_number = ''.join([i for i in location if not i.isdigit()])
-  print(parse_out_number)
-  # if parse_out_number:
-  #   return location[parse_out_number]
+  parse_out_number = ''.join([i for i in location if not i.isdigit()]).lower().strip()
+  if len(parse_out_number) > 0:
+    location =  gameLocation[parse_out_number]
+    return f"{location.address}, {location.city}, {location.state}, {location.zip_code}"
 
-  # return gameLocation['default']
-
-   # return f"{playing_location.address}, {playing_location.city}, {playing_location.state}, {playing_location.zip_code}"
+  default_location =  gameLocation['default']
+  return f"{default_location.address}, {default_location.city}, {default_location.state}, {default_location.zip_code}"
 
 
 def create_ICalendar(collections):
@@ -46,9 +45,6 @@ def create_ICalendar(collections):
     playing_location =  format_location(field_location)
 
 
-    # print(playing_location)
-
-
     # Create event
     event = Event()
     event.add('summary', f" {player} Soccer Game ({division})")
@@ -61,7 +57,7 @@ def create_ICalendar(collections):
     cal.add_component(event)
 
     # Write to .ics file
-  # with open("./data/2025_soccer_schedule.ics", "wb") as f:
-  #   f.write(cal.to_ical())
+  with open("./data/2025.08.14_soccer_schedule.ics", "wb") as f:
+    f.write(cal.to_ical())
 
   print("✅ iCalendar file 'soccer_schedule.ics' created.")
