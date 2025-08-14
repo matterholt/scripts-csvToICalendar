@@ -23,7 +23,7 @@ def format_location (location):
     return f"{location.address}, {location.city}, {location.state}, {location.zip_code}"
 
   default_location =  gameLocation['default']
-  return f"{default_location.address}, {default_location.city}, {default_location.state}, {default_location.zip_code}"
+  return f"{default_location.address}, {default_location.city}, {default_location.state} {default_location.zip_code}"
 
 
 def create_ICalendar(collections):
@@ -41,7 +41,7 @@ def create_ICalendar(collections):
     dt_start = tz.localize(datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %I:%M %p"))
     dt_end = dt_start + timedelta(minutes=duration[division])
 
-    playing_field = field_number if field_number == 'N/A' else field_location
+    playing_field = field_number if field_number != '#N/A' else field_location
     playing_location =  format_location(field_location)
 
 
