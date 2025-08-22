@@ -27,12 +27,12 @@ def database_startup(csv_file_path):
   CREATE TABLE IF NOT EXISTS games (
       date TEXT,
       time TEXT,
-      field_location TEXT,
-      field_number TEXT,
-      home_coach TEXT,
-      visitor_coach TEXT,
+      location TEXT,
+      field TEXT,
+      home TEXT,
+      visitor TEXT,
       division TEXT,
-      UNIQUE(date, time, field_location, field_number)
+      UNIQUE(date, time,location, field)
   )
   ''')
 
@@ -42,7 +42,7 @@ def database_startup(csv_file_path):
       for row in reader:
 
         try:
-            parsed_date = datetime.strptime(row['DATE'], "%A, %B %d, %Y").date()
+            parsed_date = datetime.strptime(row['date'], "%A, %B %d, %Y").date()
         except ValueError as e:
             print(f"Date parsing error: {e} on row: {row}")
             continue  # Skip invalid rows or handle as needed
@@ -50,31 +50,31 @@ def database_startup(csv_file_path):
         # Check for duplicate
         cursor.execute('''
             SELECT 1 FROM games WHERE
-                date = ? AND time = ? AND field_location = ? AND field_number = ?
+                date = ? AND time = ? AND location = ? AND field = ?
         ''', (
             parsed_date,
-            row['TIME'],
-            row['FIELD LOCATION'],
-            row['FIELD #']
+            row['time'],
+            row['location'],
+            row['field']
         ))
         exists = cursor.fetchone()
 
         if exists:
-          log_duplicate(date=parsed_date,time = row['TIME'],field =row['FIELD LOCATION'],fieldNum = row['FIELD #'])
+          log_duplicate(date=parsed_date,time = row['time'],field =row['location'],fieldNum = row['field'])
           continue  # Skip insert
 
 
         cursor.execute('''
-            INSERT OR IGNORE INTO games (date, time, field_location, field_number, home_coach, visitor_coach, division)
+            INSERT OR IGNORE INTO games (date, time, location, field, home, visitor, division)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (
             parsed_date,
-            row['TIME'],
-            row['FIELD LOCATION'],
-            row['FIELD #'],
-            row['HOME COACH'],
-            row['VISITOR COACH'],
-            row['Division']
+            row['time'],
+            row['location'],
+            row['field'],
+            row['home'],
+            row['visitor'],
+            row['division']
         ))
 
   # === Commit and close ===
